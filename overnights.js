@@ -1,33 +1,20 @@
-window.onload = etc();
 
-function etc() {
-   
+function preventDefault() {
+    checkbox.addEventListener("click", ect, false);
+}
+function etc(event) {
+    event.preventDefault();
     //get querey selectors
-    const nights = parseInt(document.getElementById("nightVisits").value);
+    let nights = document.getElementById("nightVisits").value;
     let travelDateElement = new Date(document.getElementById("travelDates")).value;
     let roomOptionsValue = document.querySelector("input[name='roomOptions']:checked").value;
-    let discounted = document.querySelector("input[name='discount']:checked");
+    let discounted = document.querySelector("input[name='discount']:checked").value;
 
-let discount = getDiscount(discounted,price);
-let price = getPrice(month, price, roomOptionsValue);
-let tax= getTaxes(discountedPrice);
-let discountedPrice = getDiscountedPrice(discount);
-let total =  getTotalPrice(discountedPrice,taxes);
 
-const money = new Intl.NumberFormat('en-US',
-                { style: 'currency', currency: 'USD' });
-
-document.getElementById("originalRate").innerHTML = money.format(price);
-document.getElementById("discountID").innerHTML = money.format(discount);
-document.getElementById("discountedrateID").innerHTML = money.format(discountedPrice);
-document.getElementById("taxes").innerHTML = money.format(tax);
-document.getElementById("totalStay").innerHTML = money.format(total);
-
-}
-
-function getPrice(month, price, roomOptionsValue ){
     let month = travelDateElement.getMonth();
     let thisSeason = false;
+    let price = 0;
+    let discount = 0;
     switch (month) {
         case 5:
         case 6:
@@ -38,7 +25,10 @@ function getPrice(month, price, roomOptionsValue ){
             thisSeason = false;
             break;
     }
-    let price = 0
+
+    console.log(month);
+
+    
     if (thisSeason) {
         if (roomOptionsValue == "king" || roomOptionsValue == "queen") {
             price = 250 * nights;
@@ -52,35 +42,30 @@ function getPrice(month, price, roomOptionsValue ){
             price = 210 * nights;
         }
     }
-    return price;
-}
-
-function getDiscount(discounted,price){
    
-    let discount = 0
-    if (discounted && discounted.value === aAA){
-        discount = (.1 * price)
+    
+    if (discounted && discounted.value === "aAA"){
+        discount += .1 * price
     } 
-    if (discounted && discounted.value === serviceDiscount) {
-        discount = (.2 * price)
+    if (discounted && discounted.value === "serviceDiscount") {
+        discount += .2 * price
     }
-     if (discounted && discounted.value === none ) {
+     if (discounted && discounted.value === "none" ) {
         discount = 0
     }
 
 
-    return discount;
-}
-function getDiscountedPrice(discount){
-let discountedPrice = discount - price;
-    return discountedPrice;
-}
-
-function getTaxes(discountedPrice){
+let discountedPrice = Math.abs(discount - price);
     let taxes = .12 * discountedPrice
-    return taxes;
-}
-function getTotalPrice(discountedPrice,taxes,nights){
-    return (taxes + discountedPrice)* nights;
-}
+    let total = taxes + discountedPrice;
 
+
+const money = new Intl.NumberFormat('en-US',
+                { style: 'currency', currency: 'USD' });
+
+document.getElementById("originalRate").innerText = money.format(`${price}`);
+document.getElementById("discountID").innerText = money.format(`${discount}`);
+document.getElementById("discountedRateID").innerText = money.format(`${discountedPrice}`);
+document.getElementById("taxes").innerText = money.format(`${taxes}`);
+document.getElementById("totalStay").innerText = money.format(`${total}`);
+}
